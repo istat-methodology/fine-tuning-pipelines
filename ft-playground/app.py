@@ -22,8 +22,6 @@ with st.sidebar:
         with st.spinner('Loading data...'):
             st.session_state['dataset'] = load_dataset(data_id, token=hf_token)
             st.toast('Data loaded succesfully!')
-    st.selectbox('Text Feature', options=['text'])
-    st.selectbox('Target Feature', options=['label'])
     st.subheader('Model')
     model = st.selectbox('Select model', options=params.MODELS.keys())
     task_list = params.MODELS[model]['tasks']
@@ -80,6 +78,18 @@ with tab1:
             with col5:
                 st.number_input(**training_config['NUM_EPOCHS'])
             
+            training_settings = {
+                'learning_rate': st.session_state[training_config['LEARNING_RATE']['key']],
+                'lr_scheduler': st.session_state[training_config['LR_SCHEDULER']['key']],
+                'weight_decay': st.session_state[training_config['WEIGHT_DECAY']['key']],
+                'warmup_ratio': st.session_state[training_config['WARMUP_RATIO']['key']],
+                'per_device_train_batch_size': st.session_state[training_config['TRAIN_BS']['key']],
+                'per_device_eval_batch_size': st.session_state[training_config['EVAL_BS']['key']],
+                'gradient_accumulation_steps': st.session_state[training_config['GA_STEPS']['key']],
+                'precision': st.session_state[training_config['PRECISION']['key']],
+                'num_train_epochs': st.session_state[training_config['NUM_EPOCHS']['key']],
+            }
+            
             st.divider()
 
             col1, col2, col3 = st.columns(3)
@@ -105,3 +115,5 @@ with tab1:
             with col4:
                 st.selectbox(**optimization_config['TASK_TYPE'])
     st.button('Train')
+
+    st.json(training_settings)
