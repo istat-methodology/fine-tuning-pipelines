@@ -9,6 +9,34 @@ MODELS = {
     }
 }
 
+DATA_CONFIGS = {
+    'TRAIN_SPLIT': {
+        'label': 'Training',
+        'key': 'training_split',
+        'help': ''
+    },
+    'VAL_SPLIT': {
+        'label': 'Validation',
+        'key': 'validation_split',
+        'help': ''
+    },
+    'TEST_SPLIT': {
+        'label': 'Test',
+        'key': 'test_split',
+        'help': ''
+    },
+    'TEXT_FEATURE': {
+        'label': 'Text feature',
+        'key': 'text_feature',
+        'help': ''
+    },
+    'TARGET_FEATURE': {
+        'label': 'Target feature',
+        'key': 'target_feature',
+        'help': ''
+    }
+}
+
 TRAINING_CONFIGS = {
     'LEARNING_RATE': {
         'label': 'Learning rate',
@@ -102,6 +130,43 @@ LOGGING_CONFIGS = {
         'label': 'Save strategy',
         'options': ['epoch', 'steps'],
         'key': 'save_strategy',
+        'help': ''
+    }
+}
+
+OPTIMIZATION_CONFIGS = {
+    '4BIT_QUANTIZATION': {
+        'label': '4-bit quantization',
+        'key': '4bit_quantization',
+        'help': ''
+    },
+    'LORA_R': {
+        'label': 'Rank',
+        'min_value': 1,
+        'value': 8,
+        'key': 'r',
+        'help': ''
+    },
+    'LORA_ALPHA': {
+        'label': 'Alpha',
+        'min_value': 1,
+        'value': 16,
+        'key': 'lora_alpha',
+        'help': ''
+    },
+    'LORA_DROPOUT': {
+        'label': 'Dropout',
+        'min_value': 0.0,
+        'max_value': 0.99,
+        'value': 0.05,
+        'step': 0.05,
+        'key': 'lora_dropout',
+        'help': ''
+    },
+    'TASK_TYPE': {
+        'label': 'Task type',
+        'options': ['SEQ_CLS'],
+        'key': 'task_type',
         'help': ''
     }
 }

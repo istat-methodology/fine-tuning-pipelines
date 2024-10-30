@@ -6,26 +6,57 @@ st.title("Fine-tuning Playground")
 st.write("Zero-code interface for fine-tuning `Transformers` models.")
 st.logo("resources/logo.png", size='medium', link="https://github.com/istat-methodology/fine-tuning-pipelines", icon_image="resources/logo-small.png")
 
+data_config = params.DATA_CONFIGS
+training_config = params.TRAINING_CONFIGS
+logging_config = params.LOGGING_CONFIGS
+optimization_config = params.OPTIMIZATION_CONFIGS
+
+if 'dataset' not in st.session_state:
+    st.session_state['dataset'] = None
+
 with st.sidebar:
     hf_token = st.text_input('Huggingface Token', type='password')
     st.subheader('Data')
     data_id = st.text_input('Training Data')
     if st.button('Load'):
-        dataset = load_dataset(data_id, token=hf_token)
+        with st.spinner('Loading data...'):
+            st.session_state['dataset'] = load_dataset(data_id, token=hf_token)
+            st.toast('Data loaded succesfully!')
     st.selectbox('Text Feature', options=['text'])
     st.selectbox('Target Feature', options=['label'])
     st.subheader('Model')
     model = st.selectbox('Select model', options=params.MODELS.keys())
     task_list = params.MODELS[model]['tasks']
-    st.selectbox('Select task', options=task_list)
+    st.selectbox('Select task', options=task_list, key='training_task')
 
 tab1, tab2, tab3 = st.tabs(['Settings', 'Training Board', 'Results'])
 
 with tab1:
-    with st.expander("Training settings", expanded=False, icon=':material/rule_settings:'):
-
-        training_config = params.TRAINING_CONFIGS
-        logging_config = params.LOGGING_CONFIGS
+    with st.expander("Data", expanded=False, icon=':material/database:'):
+        if st.session_state['dataset']:
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.selectbox(**data_config['TRAIN_SPLIT'], options=st.session_state['dataset'].keys())
+                st.write(f"n = {len(st.session_state['dataset'][st.session_state[data_config['TRAIN_SPLIT']['key']]])}")
+            with col2:
+                val_options = list(st.session_state['dataset'].keys())
+                val_options.append('-')
+                st.selectbox(**data_config['VAL_SPLIT'], options=val_options)
+                if st.session_state[data_config['VAL_SPLIT']['key']] != '-':
+                    st.write(f"n = {len(st.session_state['dataset'][st.session_state[data_config['VAL_SPLIT']['key']]])}")
+            with col3:
+                st.selectbox(**data_config['TEST_SPLIT'], options=val_options)
+                if st.session_state[data_config['TEST_SPLIT']['key']] != '-':
+                    st.write(f"n = {len(st.session_state['dataset'][st.session_state[data_config['TEST_SPLIT']['key']]])}")
+            
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.selectbox(**data_config['TEXT_FEATURE'], options=st.session_state['dataset'][st.session_state[data_config['TRAIN_SPLIT']['key']]].features)
+            with col2:
+                st.selectbox(**data_config['TARGET_FEATURE'], options=st.session_state['dataset'][st.session_state[data_config['TRAIN_SPLIT']['key']]].features)
+        
+        
+    with st.expander("Training", expanded=False, icon=':material/rule_settings:'):
         if not st.toggle('Auto'):
             col1, col2, col3, col4 = st.columns(4)
             with col1:
@@ -61,16 +92,16 @@ with tab1:
             
             st.checkbox(**training_config['LOAD_BEST_MODEL_AT_END'], disabled=False if st.session_state['eval_strategy'] == st.session_state['save_strategy'] else True)
             
-
-
     with st.expander("Optimization", expanded=False, icon=':material/bolt:'):
-        st.checkbox("4-bit quantization")
+        st.checkbox(**optimization_config['4BIT_QUANTIZATION'])
         if st.toggle("LoRA"):
             col1, col2, col3, col4 = st.columns(4)
             with col1:
-                st.number_input("Rank", step=1, value=8)
+                st.number_input(**optimization_config['LORA_R'])
             with col2:
-                st.number_input("Alpha", step=1, value=16)
+                st.number_input(**optimization_config['LORA_ALPHA'])
             with col3:
-                st.number_input("Dropout", min_value=0.0, max_value=0.99, value=0.05)
+                st.number_input(**optimization_config['LORA_DROPOUT'])
+            with col4:
+                st.selectbox(**optimization_config['TASK_TYPE'])
     st.button('Train')
