@@ -1,6 +1,7 @@
 import streamlit as st
 from resources import params
 from datasets import load_dataset
+from modules.models import loadXLMRoBERTa
 
 st.title("Fine-tuning Playground")
 st.write("Zero-code interface for fine-tuning `Transformers` models.")
@@ -18,7 +19,7 @@ with st.sidebar:
     hf_token = st.text_input('Huggingface Token', type='password')
     st.subheader('Data')
     data_id = st.text_input('Training Data')
-    if st.button('Load'):
+    if st.button('Load', key='load_dataset'):
         with st.spinner('Loading data...'):
             st.session_state['dataset'] = load_dataset(data_id, token=hf_token)
             st.toast('Data loaded succesfully!')
@@ -26,6 +27,9 @@ with st.sidebar:
     model = st.selectbox('Select model', options=params.MODELS.keys())
     task_list = params.MODELS[model]['tasks']
     st.selectbox('Select task', options=task_list, key='training_task')
+    if st.button('Load', key='load_model'):
+        with st.spinner('Loading model...'):
+            pass
 
 tab1, tab2, tab3 = st.tabs(['Settings', 'Training Board', 'Results'])
 
@@ -115,5 +119,3 @@ with tab1:
             with col4:
                 st.selectbox(**optimization_config['TASK_TYPE'])
     st.button('Train')
-
-    st.json(training_settings)
