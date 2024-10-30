@@ -5,10 +5,14 @@ from transformers import (
     AutoModelForSequenceClassification,
 )
 
-def load_XLMRoBERTa(model_id: str, num_labels: int, hf_token: str, device: str):
-    model = AutoModelForSequenceClassification.from_pretrained(
-        model_id,
-        num_labels=num_labels
-    ).to(device)
+def load_model(model_id: str, task_type: str, num_labels: int, hf_token: str, device: str):
+    if task_type == 'sequence-classification':
+        model = AutoModelForSequenceClassification.from_pretrained(
+            model_id,
+            num_labels=num_labels,
+            token=hf_token
+        ).to(device)
+    else:
+        model = None
     tokenizer = AutoTokenizer.from_pretrained(model_id)
     return model, tokenizer

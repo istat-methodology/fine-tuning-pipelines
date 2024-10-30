@@ -1,7 +1,7 @@
 import streamlit as st
 from resources import params
 from datasets import load_dataset
-from modules.models import loadXLMRoBERTa
+from modules import models
 
 st.title("Fine-tuning Playground")
 st.write("Zero-code interface for fine-tuning `Transformers` models.")
@@ -14,6 +14,8 @@ optimization_config = params.OPTIMIZATION_CONFIGS
 
 if 'dataset' not in st.session_state:
     st.session_state['dataset'] = None
+if 'model_id' not in st.session_state:
+    st.session_state['model_id'] = None
 
 with st.sidebar:
     hf_token = st.text_input('Huggingface Token', type='password')
@@ -24,12 +26,20 @@ with st.sidebar:
             st.session_state['dataset'] = load_dataset(data_id, token=hf_token)
             st.toast('Data loaded succesfully!')
     st.subheader('Model')
-    model = st.selectbox('Select model', options=params.MODELS.keys())
-    task_list = params.MODELS[model]['tasks']
+    st.selectbox('Select model', options=params.MODELS.keys(), key='model_id')
+    task_list = params.MODELS[st.session_state['model_id']]['tasks']
     st.selectbox('Select task', options=task_list, key='training_task')
+
     if st.button('Load', key='load_model'):
         with st.spinner('Loading model...'):
-            pass
+            model, tokenizer = models.load_model(
+                model_id=params.MODELS[st.session_state['model_id']]['model_id'],
+                task_type=st.session_state['training_task'],
+                num_labels=2,
+                hf_token=hf_token,
+                device='cuda'
+            )
+        st.toast('Model and tokenizer loaded succesfully!')
 
 tab1, tab2, tab3 = st.tabs(['Settings', 'Training Board', 'Results'])
 
