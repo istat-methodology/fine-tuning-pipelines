@@ -3,6 +3,31 @@ from resources import params
 from datasets import load_dataset
 from modules import models
 
+# CUSTOM CSS
+border_color = ""
+st.markdown("""
+    <style>
+    /* Add border to the selectbox */
+    .stSelectbox > div[data-baseweb="select"] > div {
+        border: 2px solid #E063FF;  /* Border color and thickness */
+        border-radius: 10px;         /* Optional: rounded corners */
+        padding: 0px;               /* Optional: padding inside the border */
+    }
+    /* Add border to the selectbox */
+    .stTextInput > div[data-baseweb="input"] {
+        border: 2px solid #E063FF;  /* Border color and thickness */
+        border-radius: 10px;         /* Optional: rounded corners */
+        padding: 0px;               /* Optional: padding inside the border */
+    }
+    /* Add border to the selectbox */
+    .stNumberInput > div[data-baseweb="input"] > div {
+        border: 2px solid #E063FF;  /* Border color and thickness */
+        border-radius: 10px;         /* Optional: rounded corners */
+        padding: 0px;               /* Optional: padding inside the border */
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
 st.title("Fine-tuning Playground")
 st.write("Zero-code interface for fine-tuning `Transformers` models.")
 st.logo("resources/logo.png", size='medium', link="https://github.com/istat-methodology/fine-tuning-pipelines", icon_image="resources/logo-small.png")
@@ -66,6 +91,8 @@ with tab1:
                 st.selectbox(**data_config['TEXT_FEATURE'], options=st.session_state['dataset'][st.session_state[data_config['TRAIN_SPLIT']['key']]].features)
             with col2:
                 st.selectbox(**data_config['TARGET_FEATURE'], options=st.session_state['dataset'][st.session_state[data_config['TRAIN_SPLIT']['key']]].features)
+        else:
+            st.warning('Please load the data')
         
         
     with st.expander("Training", expanded=False, icon=':material/rule_settings:'):
