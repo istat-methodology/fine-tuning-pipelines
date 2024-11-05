@@ -4,8 +4,8 @@
 <div align="center">
   
   <a href="">![Static Badge](https://img.shields.io/badge/XLM_R-red)</a>
-  <a href="">![Static Badge](https://img.shields.io/badge/Llama-blue)</a>
-  <a href="">![Static Badge](https://img.shields.io/badge/Gemma-green)</a>
+  <a href="">![Static Badge](https://img.shields.io/badge/Llama_3.2-blue)</a>
+  <a href="">![Static Badge](https://img.shields.io/badge/Gemma_2-green)</a>
   <a href="">![Static Badge](https://img.shields.io/badge/Minerva-cian)</a>
   
 </div>
