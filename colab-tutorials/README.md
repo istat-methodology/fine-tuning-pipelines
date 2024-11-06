@@ -13,4 +13,6 @@
   This folder contains fully-working colab notebooks with tutorials and playground code. No Hugging Face account needed, all models and datasets referenced are openly accessible.
 </p>
 
-![alt text](<resources/readme_img1.png>)
+<div align="center">
+  <img src="resources/readme_img1.png" alt="Tutorial Image">
+</div>
