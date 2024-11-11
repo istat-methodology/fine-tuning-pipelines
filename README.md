@@ -13,3 +13,14 @@
 <p align="center">
   Straightforward ready-to-use code for fine-tuning Hugging Face 🤗 Transformers.
 </p>
+
+<div align="center">
+  
+| model | sequence classification | text generation |
+| ----- | :-----------------------: | :---------------: |
+| XLM-R |  ✅                    | -              |
+| Llama 3.2 |  ✅                    | 🔜              |
+| Gemma 2 |  ✅                    | 🔜              |
+| Minerva |  ✅                    | 🔜              |
+
+</div>
